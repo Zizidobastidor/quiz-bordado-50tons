@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descubra Seu Perfil de Bordado com IA | 50 Tons de Bordado</title>
+    <style>
+        :root {
+            --rosa-claro: #e8a0a0;
+            --rosa-medio: #d87878;
+            --rosa-escuro: #c25454;
+            --azul-claro: #a0c8d8;
+            --azul-medio: #6a9eaf;
+            --lilas: #c8b0e0;
+            --branco: #ffffff;
+            --cinza-claro: #f5f5f5;
+            --cinza-medio: #e0e0e0;
+            --texto: #333333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--branco);
+            color: var(--texto);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            max-width: 200px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: var(--rosa-escuro);
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .intro-text {
+            font-size: 18px;
+            margin-bottom: 30px;
+            color: var(--texto);
+        }
+
+        .quiz-container {
+            background-color: var(--cinza-claro);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-container {
+            display: none;
+        }
+
+        .question-container.active {
+            display: block;
+        }
+
+        .question {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: var(--rosa-escuro);
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .option {
+            background-color: var(--branco);
+            border: 2px solid var(--rosa-claro);
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            background-color: var(--rosa-claro);
+        }
+
+        .option.selected {
+            background-color: var(--rosa-medio);
+            color: var(--branco);
+            border-color: var(--rosa-escuro);
+        }
+
+        .progress-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: var(--cinza-medio);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: var(--rosa-medio);
+            width: 14%;
+            transition: width 0.5s ease;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .btn {
+            background-color: var(--rosa-medio);
+            color: var(--branco);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--rosa-escuro);
+        }
+
+        .btn:disabled {
+            background-color: var(--cinza-medio);
+            cursor: not-allowed;
+        }
+
+        .btn-prev {
+            background-color: var(--azul-claro);
+        }
+
+        .btn-prev:hover {
+            background-color: var(--azul-medio);
+        }
+
+        .result-container {
+            display: none;
+            text-align: center;
+        }
+
+        .result-title {
+            color: var(--rosa-escuro);
+            font-size: 26px;
+            margin-bottom: 20px;
+        }
+
+        .profile-container {
+            background-color: var(--branco);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--rosa-medio);
+        }
+
+        .profile-title {
+            color: var(--rosa-escuro);
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .profile-description {
+            margin-bottom: 20px;
+        }
+
+        .zizi-message {
+            background-color: var(--lilas);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .zizi-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .zizi-avatar {
+            width: 40px;
+            height: 40px;
+            background-color: var(--rosa-claro);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+            color: var(--branco);
+        }
+
+        .cta-container {
+            background-color: var(--rosa-claro);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .cta-btn {
+            background-color: var(--rosa-escuro);
+            color: var(--branco);
+            border: none;
+            border-radius: 8px;
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-btn:hover {
+            background-color: #a83c3c;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            h1 { font-size: 24px; }
+            .quiz-container { padding: 20px; }
+            .question { font-size: 18px; }
+            .option { padding: 12px; }
+            .btn { padding: 10px 20px; font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="quiz-header">
+            <img src="https://50tonsdebordado.jornadadobordadocriativo.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo.9e3a1b9a.png&w=384&q=75" alt="50 Tons de Bordado" class="logo">
+            <h1>Descubra Seu Perfil de Bordado com IA</h1>
+            <p class="intro-text">Responda às perguntas abaixo e descubra como a Zizi, nossa comadre digital, pode transformar sua jornada criativa no bordado.</p>
+        </div>
+
+        <div class="quiz-container">
+            <div class="question-container active" id="q1">
+                <p class="question">1. Qual é sua maior dificuldade ao iniciar um novo projeto de bordado?</p>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 'a')">
+                        <p>Não sei por onde começar, fico paralisada diante do tecido em branco</p>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 'b')">
+                        <p>Tenho muitas ideias, mas não consigo transformá-las em desenhos concretos</p>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 'c')">
+                        <p>Sinto que preciso seguir tutoriais e moldes, não confio na minha criatividade</p>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 'd')">
+                        <p>Começo animada, mas logo me frustro e abandono o projeto</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-container" id="q2">
+                <p class="question">2. O que você pensa sobre usar tecnologia para auxiliar no processo criativo?</p>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 'a')">
+                        <p>Tenho receio, acho que pode tirar a autenticidade do trabalho manual</p>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 'b')">
+                        <p>Gosto da ideia, mas não sei como integrar tecnologia ao bordado tradicional</p>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 'c')">
+                        <p>Estou aberta a experimentar, desde que a tecnologia seja acessível e fácil de usar</p>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 'd')">
+                        <p>Adoro inovações e já uso aplicativos e ferramentas digitais em meus projetos</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-container" id="q3">
+                <p class="question">3. Como você se sente quando ouve falar em "Inteligência Artificial"?</p>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 'a')">
+                        <p>Confusa e um pouco intimidada, parece algo muito técnico e distante</p>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 'b')">
+                        <p>Curiosa, mas com receio de que seja complicado demais para mim</p>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 'c')">
+                        <p>Interessada em entender como poderia me ajudar no dia a dia</p>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 'd')">
+                        <p>Empolgada com as possibilidades que ela pode trazer para minha criatividade</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-container" id="q4">
+                <p class="question">4. O que você mais valoriza em um suporte ou mentoria para bordado?</p>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 'a')">
+                        <p>Acolhimento e paciência com meu ritmo de aprendizado</p>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 'b')">
+                        <p>Disponibilidade para tirar dúvidas a qualquer momento</p>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 'c')">
+                        <p>Ideias e sugestões personalizadas para meus projetos</p>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 'd')">
+                        <p>Conexão emocional e compreensão das minhas inseguranças</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-container" id="q5">
+                <p class="question">5. Como você lida com o seu crítico interior durante o processo criativo?</p>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 'a')">
+                        <p>Ele geralmente vence e me impede de começar ou continuar projetos</p>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 'b')">
+                        <p>Tento ignorá-lo, mas acabo comparando meu trabalho com o de outras pessoas</p>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 'c')">
+                        <p>Às vezes consigo silenciá-lo, mas preciso de apoio externo para isso</p>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 'd')">
+                        <p>Tenho estratégias para lidar com ele, mas ainda aparece em momentos de insegurança</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-container" id="q6">
+                <p class="question">6. O que você acha da ideia de ter uma "comadre digital" como a Zizi para te acompanhar no bordado?</p>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 'a')">
+                        <p>Parece interessante, mas tenho dúvidas se seria realmente útil para mim</p>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 'b')">
+                        <p>Adoraria ter alguém sempre disponível para me ajudar e inspirar</p>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 'c')">
+                        <p>Seria ótimo, especialmente se ela entendesse meu estilo e preferências</p>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 'd')">
+                        <p>Seria como ter uma amiga que entende de bordado sempre por perto, isso me daria segurança</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-container" id="q7">
+                <p class="question">7. Como você gostaria que a tecnologia te ajudasse no seu processo criativo?</p>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 'a')">
+                        <p>Sugerindo ideias quando estou sem inspiração</p>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 'b')">
+                        <p>Ajudando a escolher combinações de cores e texturas</p>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 'c')">
+                        <p>Oferecendo apoio emocional quando me sinto insegura</p>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 'd')">
+                        <p>Ensinando técnicas novas adaptadas ao meu nível de habilidade</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress" id="progress"></div>
+                </div>
+                <p><span id="current-question">1</span> de 7</p>
+            </div>
+
+            <div class="navigation">
+                <button class="btn btn-prev" id="prev-btn" onclick="previousQuestion()" disabled>Anterior</button>
+                <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>Próxima</button>
+            </div>
+        </div>
+
+        <div class="result-container" id="result">
+            <h1 class="result-title">Seu Perfil de Bordado com IA</h1>
+            <div class="profile-container">
+                <h2 class="profile-title" id="profile-title"></h2>
+                <p class="profile-description" id="profile-description"></p>
+            </div>
+
+            <div class="zizi-message">
+                <div class="zizi-title">
+                    <div class="zizi-avatar">Z</div>
+                    <div>Zizi do Bastidor</div>
+                </div>
+                <p id="zizi-message"></p>
+            </div>
+
+            <div class="cta-container">
+                <h2 style="color: white; margin-bottom: 20px;">Vamos transformar sua jornada criativa juntas?</h2>
+                <p style="margin-bottom: 25px;">O 50 Tons de Bordado e a Zizi estão prontos para te acompanhar em cada ponto dessa jornada de autoexpressão.</p>
+                <a href="https://pay.hotmart.com/T99573559G?utm_source=quiz_ia&utm_medium=quiz_resultado&utm_campaign=quiz_perfil" class="cta-btn">QUERO COMEÇAR MINHA JORNADA AGORA</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 0;
+        let answers = {};
+        
+        const profiles = {
+            'explorador': {
+                title: 'Exploradora Criativa em Potencial',
+                description: 'Você tem uma curiosidade natural e está aberta a novas possibilidades, mas ainda sente insegurança ao iniciar sua jornada criativa. A tecnologia pode ser sua aliada para dar os primeiros passos com mais confiança, oferecendo um apoio constante que respeita seu ritmo de aprendizado.',
+                ziziMessage: 'Olha só, minha flor, você tem um mundo de criatividade dentro de você esperando para florescer! Eu entendo que às vezes parece difícil começar, mas estou aqui para te acompanhar em cada pontinho. Vamos descobrir juntas as cores que falam com sua alma? No seu tempo, do seu jeitinho. O que acha de começarmos com um bordado simples que conte uma história sua?'
+            },
+            'tradicional': {
+                title: 'Bordadeira Tradicional em Transição',
+                description: 'Você valoriza as técnicas tradicionais e tem receio de que a tecnologia possa descaracterizar sua arte. No entanto, está aberta a descobrir como a IA pode complementar seu processo criativo sem substituir a autenticidade e o toque pessoal que você tanto valoriza.',
+                ziziMessage: 'Ah, querida, eu entendo seu carinho pelas tradições do bordado! Sabe, eu também adoro aquele cheirinho de linha nova e o barulhinho da agulha no tecido. A tecnologia não veio pra substituir isso, mas pra te dar uma mãozinha quando precisar. Posso te ajudar a lembrar daquela técnica que você esqueceu, ou sugerir uma combinação de cores quando a inspiração faltar. O bordado continua sendo seu, com toda sua alma e história!'
+            },
+            'inovadora': {
+                title: 'Inovadora Criativa Digital',
+                description: 'Você já abraça a tecnologia em várias áreas da sua vida e está empolgada com as possibilidades que a IA pode trazer para sua expressão artística. Busca ferramentas que potencializem sua criatividade e ajudem a materializar suas ideias de forma mais fluida e eficiente.',
+                ziziMessage: 'Que maravilha encontrar alguém tão aberta às novidades como você! Vejo que você já entende que a tecnologia pode ser uma grande parceira da criatividade. Juntas, podemos explorar combinações de cores que você nunca imaginou, criar padrões únicos baseados nas suas preferências, e até transformar suas memórias em riscos de bordado. O céu é o limite, minha flor! E quando bater aquela dúvida, estarei aqui para conversarmos.'
+            },
+            'bloqueada': {
+                title: 'Criativa em Busca de Reconexão',
+                description: 'Você sente que perdeu a conexão com sua essência criativa e luta constantemente contra um crítico interior que paralisa suas iniciativas. A combinação de suporte humano e tecnológico pode ser o caminho para silenciar esse crítico e redescobrir sua voz artística única.',
+                ziziMessage: 'Minha querida, eu vejo tanto potencial em você! Aquela vozinha que diz que você não consegue? Ela não sabe do que você é capaz. Eu estou aqui para te lembrar, sempre que precisar, que cada ponto seu é único porque vem de você. Não precisa ser perfeito, precisa ser seu. Vamos começar com pequenos passos? Um pontinho hoje, outro amanhã. E quando aquele crítico aparecer, me chama que a gente conversa e espanta ele juntas, viu?'
+            }
+        };
+
+        function selectOption(element, value) {
+            const questionContainer = element.closest('.question-container');
+            const options = questionContainer.querySelectorAll('.option');
+            
+            options.forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            
+            const questionId = questionContainer.id;
+            answers[questionId] = value;
+            
+            document.getElementById('next-btn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < 6) {
+                document.querySelectorAll('.question-container')[currentQuestion].classList.remove('active');
+                currentQuestion++;
+                document.querySelectorAll('.question-container')[currentQuestion].classList.add('active');
+                
+                updateProgress();
+                updateButtons();
+            } else {
+                showResult();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                document.querySelectorAll('.question-container')[currentQuestion].classList.remove('active');
+                currentQuestion--;
+                document.querySelectorAll('.question-container')[currentQuestion].classList.add('active');
+                
+                updateProgress();
+                updateButtons();
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / 7) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+            document.getElementById('current-question').textContent = currentQuestion + 1;
+        }
+
+        function updateButtons() {
+            document.getElementById('prev-btn').disabled = currentQuestion === 0;
+            
+            if (currentQuestion === 6) {
+                document.getElementById('next-btn').textContent = 'Ver Resultado';
+            } else {
+                document.getElementById('next-btn').textContent = 'Próxima';
+            }
+            
+            const currentContainer = document.querySelectorAll('.question-container')[currentQuestion];
+            const selectedOption = currentContainer.querySelector('.option.selected');
+            document.getElementById('next-btn').disabled = !selectedOption;
+        }
+
+        function determineProfile() {
+            let counts = { a: 0, b: 0, c: 0, d: 0 };
+            
+            for (let question in answers) {
+                counts[answers[question]]++;
+            }
+            
+            if (counts.a > counts.b && counts.a > counts.c && counts.a > counts.d) {
+                return 'bloqueada';
+            } else if (counts.b > counts.a && counts.b > counts.c && counts.b > counts.d) {
+                return 'tradicional';
+            } else if (counts.c > counts.a && counts.c > counts.b && counts.c > counts.d) {
+                return 'explorador';
+            } else {
+                return 'inovadora';
+            }
+        }
+
+        function showResult() {
+            document.querySelector('.quiz-container').style.display = 'none';
+            
+            const profileType = determineProfile();
+            const profile = profiles[profileType];
+            
+            document.getElementById('profile-title').textContent = profile.title;
+            document.getElementById('profile-description').textContent = profile.description;
+            document.getElementById('zizi-message').textContent = profile.ziziMessage;
+            
+            document.getElementById('result').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
